@@ -42,13 +42,17 @@ def callback():
 def handle_message(event):
     global working_status
 
+    print('type:' + event.message.type);
+    print('text:' + event.message.text);
+    print('status:' + event.source.type == 'group' and (mtext.startswith('YY ') == False));
+
     # 判斷訊息類型是否為文字
     if event.message.type == "text":
         working_status = True;
 
     # 判斷訊息類型是否在群組
     mtext = event.message.text
-    if (event.source.type == 'group' and mtext.startswith('YY ') == False):
+    if (event.source.type == 'group' and (mtext.startswith('YY ') == False)):
         working_status = False;
 
 
