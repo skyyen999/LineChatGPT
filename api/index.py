@@ -44,7 +44,7 @@ def handle_message(event):
 
     print('source type:' + event.source.type);
     print('text:' + event.message.text);
-    print('status:' + event.message.startswith('YY '));
+    print('status:' + event.message.text.startswith('YY '));
 
 
     # 判斷訊息類型是否為文字
@@ -53,7 +53,7 @@ def handle_message(event):
 
     # 判斷訊息類型是否在群組
     if event.source.type == 'group':
-        if event.message.startswith('YY ' == False):
+        if event.message.text.startswith('YY ' == False):
             working_status = False;
 
 
