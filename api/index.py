@@ -49,7 +49,7 @@ def handle_message(event):
 
     # 判斷訊息類型是否個人聊天，不是個人聊天檢查是不是"YY "開頭
     if event.source.type != 'user':
-        if mtext.startswith('YY '):
+        if mtext.startswith('YY ') or mtext.startswith('BOT ') or mtext.startswith('GPT ') or mtext.startswith('yy ') or mtext.startswith('bot ') or mtext.startswith('gpt '): 
             mtext = mtext[2:]
         else:
             working_status = False
