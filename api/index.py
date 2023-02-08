@@ -5,6 +5,9 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from api.chatgpt import ChatGPT
 import os
+import logging
+import json
+
 
 # 建立 LineBotApi 和 WebhookHandler 物件
 line_bot_api = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN"))
@@ -45,6 +48,8 @@ def handle_message(event):
     print('type:' + event.message.type);
     print('text:' + event.message.text);
     print('status:' + event.source.type == 'group' and (mtext.startswith('YY ') == False));
+
+    logging.info(json.load(event));
 
     # 判斷訊息類型是否為文字
     if event.message.type == "text":
