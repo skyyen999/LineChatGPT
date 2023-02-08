@@ -42,12 +42,16 @@ def callback():
 def handle_message(event):
     global working_status
 
+    # 判斷訊息類型是否為文字
+    if event.message.type == "text":
+        working_status = True;
+
     # 判斷訊息類型是否在群組
-    if (event.source.type == 'group' & event.message.startswith('YY ')):
+    mtext = event.message.text
+    if (event.source.type == 'group' & mtext.startswith('YY ') == False):
         working_status = False;
 
-    # 判斷訊息類型是否為文字
-    working_status = working_status & event.message.type == "text"
+
 
     if working_status:
         # 加入使用者的訊息到 chatgpt 物件中
