@@ -44,7 +44,7 @@ def handle_message(event):
 
     print('source type:' + event.source.type);
     print('text:' + event.message.text);
-    print('status:' + event.message.text.startswith('YY '));
+    print("status:", event.message.text.startswith('YY '));
 
 
     # 判斷訊息類型是否為文字
