@@ -23,6 +23,10 @@ chatgpt = ChatGPT()
 # 設定根網域的路由
 @app.route('/')
 def home():
+    print('type:aa');
+
+    logging.info("aaa");
+
     return 'Hello, World!'
 
 # 設定 /webhook 路由，用於接收 linebot 的 callback 請求
@@ -44,13 +48,6 @@ def callback():
 @line_handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     global working_status
-
-    print('type:' + event.message.type);
-    print('text:' + event.message.text);
-    print('status:' + event.source.type == 'group' and (mtext.startswith('YY ') == False));
-
-    logging.info(json.load(event));
-
     # 判斷訊息類型是否為文字
     if event.message.type == "text":
         working_status = True;
