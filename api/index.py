@@ -41,11 +41,10 @@ def callback():
 @line_handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     global working_status
-    mtext = event.message.text
 
-    print('source type:{event.source.type}');
-    print('text: {mtext}');
-    print('status:' + mtext.startswith('YY '));
+    print('source type:' + event.source.type);
+    print('text:' + event.message.text);
+    print('status:' + event.message.startswith('YY '));
 
 
     # 判斷訊息類型是否為文字
@@ -54,14 +53,14 @@ def handle_message(event):
 
     # 判斷訊息類型是否在群組
     if event.source.type == 'group':
-        if mtext.startswith('YY ' == False):
+        if event.message.startswith('YY ' == False):
             working_status = False;
 
 
 
     if working_status:
         # 加入使用者的訊息到 chatgpt 物件中
-        chatgpt.add_msg(f"Human:{mtext}?\n")
+        chatgpt.add_msg(f"Human:{event.message.text}?\n")
         # 取得 chatgpt 回答的訊息
         reply_msg = chatgpt.get_response().replace("AI:", "", 1)
         chatgpt.add_msg(f"AI:{reply_msg}\n")
