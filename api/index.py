@@ -41,11 +41,14 @@ def callback():
 @line_handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     global working_status
-    
+
+    # 判斷訊息類型是否在群組
+    if (event.source.type == 'group' & event.message.startswith('YY ')):
+        working_status = False;
+
     # 判斷訊息類型是否為文字
-    if event.message.type != "text":
-        return
-    working_status = True
+    working_status = working_status & event.message.type == "text"
+
     if working_status:
         # 加入使用者的訊息到 chatgpt 物件中
         chatgpt.add_msg(f"Human:{event.message.text}?\n")
