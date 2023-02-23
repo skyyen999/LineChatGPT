@@ -20,5 +20,10 @@ class ChatGPT:
             max_tokens=self.max_tokens
         )
         return response['choices'][0]['text'].strip()
+    def get_image_response(self):
+        response = openai.Image.create(
+            prompt=self.prompt.generate_prompt(),
+        )
+        return response["data"][0]["url"].strip()
     def add_msg(self, text):
-        self.prompt.add_msg(text)
+        self.prompt.add_msg(text)  

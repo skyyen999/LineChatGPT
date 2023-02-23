@@ -2,7 +2,9 @@
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, ImageSendMessage
+
+ImageSendMessage
 from api.chatgpt import ChatGPT
 import os
 
@@ -21,6 +23,7 @@ chatgpt = ChatGPT()
 @app.route('/')
 def home():
     return 'Hello, World!'
+
 
 # 設定 /webhook 路由，用於接收 linebot 的 callback 請求
 @app.route("/webhook", methods=['POST'])
@@ -43,20 +46,28 @@ def handle_message(event):
     global working_status
     mtext = event.message.text
 
+    # 判斷是不是繪圖API
+    is_draw = False;
+
     # 判斷訊息類型是否為文字
     if event.message.type == "text":
-        working_status = True
+        is_text = False   
+
+    if event.source.type == 'user':
+        is_text = True       
 
     # 判斷訊息類型是否個人聊天，不是個人聊天檢查是不是"YY "開頭
     if event.source.type != 'user':
-        if mtext.startswith('YY ') or mtext.startswith('BOT ') or mtext.startswith('GPT ') or mtext.startswith('yy ') or mtext.startswith('bot ') or mtext.startswith('gpt '): 
-            mtext = mtext[2:]
-        else:
-            working_status = False
+        if mtext.lower().startswith(('yy ','bot ','gpt ')):
+            is_text = True       
+        if mtext.lower().startswith(('yydraw ','botdraw ','gptdraw ', 'draw ')):
+            is_text = False       
+            is_draw = True   
+
+    mtext = mtext.split(" ", 1)[1]
 
 
-
-    if working_status:
+    if is_text:
         # 加入使用者的訊息到 chatgpt 物件中
         chatgpt.add_msg(f"Human:{mtext}?\n")
         # 取得 chatgpt 回答的訊息
@@ -65,5 +76,26 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=reply_msg))
+
+    if is_draw:
+        tlen = len(mtext)
+        if(tlen < 10):
+            print(f"len:{tlen}")
+            line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="我不想畫，這描述太少了，認真一點，好嗎"))
+            return
+        
+
+        # 加入使用者的訊息到 chatgpt 物件中
+        chatgpt.add_msg(f"Human:{mtext}?\n")
+        # 取得 chatgpt 回答的訊息
+        image_url = chatgpt.get_image_response()
+
+        image_message = ImageSendMessage(
+            original_content_url= image_url
+        )
+        line_bot_api.reply_message(event.reply_token, image_message)
+
 if __name__ == "__main__":
     app.run()

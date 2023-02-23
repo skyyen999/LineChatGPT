@@ -17,4 +17,6 @@ class Prompt:
     def remove_msg(self):
         self.msg_list.pop(0)
     def generate_prompt(self):
-        return '\n'.join(self.msg_list)
+        msg = '\n'.join(self.msg_list)
+        print(f"prompt: {msg}")
+        return msg
